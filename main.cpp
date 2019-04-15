@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <graphics.h>
+#include "consolelib.h"
 struct Point{
     int x;
     int y;
@@ -20,22 +21,49 @@ void bresenham(Point p1, Point p2, bool solid = true);
 void draw2DCoor();
 void draw3DCoor();
 void realToMachine(int& x, int& y);
+void chooseCoorSystem();
+void chooseObject2Draw();
 /////////////////////////////////
 int width = 1200, height = 600;
 int midX = (int)width/2;
 int midY = (int)height/2;
 int main(int argc, char* argv[]){
     initwindow(width, height, "KYTHUATDOHOA");
-    draw2DCoor();
-    int x1 = -2, y1 = 2, x2 = 12, y2 = 12;
-    realToMachine(x1, y1);
-    realToMachine(x2, y2);
-    bresenham(Point(x1, y1), Point(x2, y2));
-    //draw3DCoor();
+    chooseCoorSystem();
+    chooseObject2Draw();
     getch();
     closegraph();
     return EXIT_SUCCESS;
 }
+void chooseCoorSystem()
+{
+    again:
+    Print_at(0, 0, "---CHON HE TOA DO---");
+    Print_at(5, 1, "1: 2D");
+    Print_at(5, 2, "2: 3D");
+    Print_at(0, 3, ">>>");
+    short choice;
+    std::cin >> choice;
+    if(choice != 1 && choice !=2)
+    {
+        Clear_at(0, 0, 10, 10);
+        goto again;
+    }
+    if(choice == 1)
+        draw2DCoor();
+    else if (choice == 2)
+        draw3DCoor();
+}
+
+void chooseObject2Draw()
+{
+    Clear_at(0, 0, 10, 10);
+    Print_at(0, 0, "---CHON VAT THE DE VE 2D---");
+    Print_at(5, 1, "1: TRAFFIC LIGHTS");
+    Print_at(5, 2, "2: DRAGON BALLS");
+    Print_at(0, 3, ">>>");
+}
+
 void realToMachine(int& x, int& y)
 {
     /*
@@ -102,8 +130,8 @@ void draw2DCoor()
 
 void draw3DCoor()
 {
-    bresenham(Point(midX, 0), Point(midX, midY));
-    //////////////////////////////////////////////////
+    bresenham(Point(midX, 0), Point(midX, midY), false);
+    ////////////////////////////////////////////////////
     bresenham(Point(0, height), Point(midX, midY), false);
     bresenham(Point(width, height), Point(midX, midY), false);
 }
