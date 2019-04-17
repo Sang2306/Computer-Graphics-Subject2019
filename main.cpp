@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <graphics.h>
 #include "consolelib.h"
+#define PI 3.141592654
 struct Point{
     float x;
     float y;
@@ -26,6 +27,7 @@ void draw3DCoor();
 void realToMachine(float& x, float& y);
 void translateCompute(float& x, float& y, float& h, float tr_x, float tr_y);
 void scaleCompute(float& x, float& y, float& h, float sx, float sy);
+void rotateCompute(float& x, float& y, float& h, float alpha);
 void chooseCoorSystem();
 void chooseObject2Draw();
 //////////GLOBAL VAR///////////
@@ -37,12 +39,13 @@ int main(int argc, char* argv[]){
     initwindow(width, height, "KYTHUATDOHOA");
     chooseCoorSystem();
     //chay thu thuat toan tinh tien
-    float x = -1, y = -1, h = 1;
+    float x = 12, y = 12, h = 1;
     float z = x, c = y;
     realToMachine(z, c);
     putpixel(z,c,YELLOW);
-    //translateCompute(x,y,h,-16, -16);
-    scaleCompute(x, y, h, 3.5, 2.6);
+    //translateCompute(x, y, h, -16, -16);
+    //scaleCompute(x, y, h, 3.5, 2.6);
+    //rotateCompute(x, y, h, 90);
     realToMachine(x, y);
     putpixel(x,y,LIGHTCYAN);
     //chooseObject2Draw();
@@ -117,6 +120,19 @@ void scaleCompute(float& x, float& y, float& h, float sx, float sy)
     x = vector[0]*scale[0][0] + vector[1]*scale[1][0] + vector[2]*scale[2][0];
     y = vector[0]*scale[0][1] + vector[1]*scale[1][1] + vector[2]*scale[2][1];
     h = vector[0]*scale[0][2] + vector[1]*scale[1][2] + vector[2]*scale[2][2];
+}
+
+void rotateCompute(float& x, float& y, float& h, float alpha)
+{
+    float vector[3] = {x, y, h};
+    float rotate[3][3] = {
+        {cos(alpha * PI/ 180), sin(alpha * PI/ 180), 0},
+        {sin(alpha * PI/ 180)*-1, cos(alpha * PI/ 180), 0},
+        {0, 0, 1},
+    };
+    x = vector[0]*rotate[0][0] + vector[1]*rotate[1][0] + vector[2]*rotate[2][0];
+    y = vector[0]*rotate[0][1] + vector[1]*rotate[1][1] + vector[2]*rotate[2][1];
+    h = vector[0]*rotate[0][2] + vector[1]*rotate[1][2] + vector[2]*rotate[2][2];
 }
 
 void bresenham(Point p1, Point p2, int color, bool solid)
