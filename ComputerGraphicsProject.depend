@@ -1,7 +1,8 @@
 # depslib dependency file v1.0
-1555336627 source:c:\users\letanhsang\desktop\computer-graphics-subject2019\main.cpp
+1555470531 source:c:\users\letanhsang\desktop\computer-graphics-subject2019\main.cpp
 	<iostream>
 	<cmath>
+	<cstdio>
 	<graphics.h>
 	"consolelib.h"
 
