@@ -4,10 +4,10 @@
 #include <graphics.h>
 #include "consolelib.h"
 struct Point{
-    int x;
-    int y;
+    float x;
+    float y;
     Point();
-    Point(int x, int y);
+    Point(float x, float y);
 };
 
 Point::Point()
@@ -15,7 +15,7 @@ Point::Point()
     x = y = -1;
 }
 
-Point::Point(int x, int y)
+Point::Point(float x, float y)
 {
     this->x = x;
     this->y = y;
@@ -23,24 +23,26 @@ Point::Point(int x, int y)
 void bresenham(Point p1, Point p2, int color, bool solid=true);
 void draw2DCoor();
 void draw3DCoor();
-void realToMachine(int& x, int& y);
-void translateCompute(int& x, int& y, int& h, int tr_x, int tr_y);
+void realToMachine(float& x, float& y);
+void translateCompute(float& x, float& y, float& h, float tr_x, float tr_y);
+void scaleCompute(float& x, float& y, float& h, float sx, float sy);
 void chooseCoorSystem();
 void chooseObject2Draw();
 //////////GLOBAL VAR///////////
 int width = 1300, height = 680;
-int midX = (int)width/2;
-int midY = (int)height/2;
+float midX = width/2;
+float midY = height/2;
 //////////////////////////////////////MAIN FUNC////////////////////////////////////////////////////
 int main(int argc, char* argv[]){
     initwindow(width, height, "KYTHUATDOHOA");
     chooseCoorSystem();
     //chay thu thuat toan tinh tien
-    int x = 1, y = 1, h = 1, tr_x = -16, tr_y = -16;
-    int z = x, c = y;
+    float x = -1, y = -1, h = 1;
+    float z = x, c = y;
     realToMachine(z, c);
     putpixel(z,c,YELLOW);
-    translateCompute(x,y,h,tr_x, tr_y);
+    //translateCompute(x,y,h,-16, -16);
+    scaleCompute(x, y, h, 3.5, 2.6);
     realToMachine(x, y);
     putpixel(x,y,LIGHTCYAN);
     //chooseObject2Draw();
@@ -78,7 +80,7 @@ void chooseObject2Draw()
     Print_at(0, 3, ">>>");
 }
 
-void realToMachine(int& x, int& y)
+void realToMachine(float& x, float& y)
 {
     /*
         Chuyen diem x,y thanh toa do may tinh
@@ -91,10 +93,10 @@ void realToMachine(int& x, int& y)
         y = midY - y*5;
 }
 
-void translateCompute(int& x, int& y, int& h, int tr_x, int tr_y)
+void translateCompute(float& x, float& y, float& h, float tr_x, float tr_y)
 {
-    int vector[3] = {x, y, h};
-    int translate[3][3] = {
+    float vector[3] = {x, y, h};
+    float translate[3][3] = {
         {1, 0, 0},
         {0, 1, 0},
         {tr_x, tr_y, 1},
@@ -104,9 +106,22 @@ void translateCompute(int& x, int& y, int& h, int tr_x, int tr_y)
     h = vector[0]*translate[0][2] + vector[1]*translate[1][2] + vector[2]*translate[2][2];
 }
 
+void scaleCompute(float& x, float& y, float& h, float sx, float sy)
+{
+    float vector[3] = {x, y, h};
+    float scale[3][3] = {
+        {sx, 0, 0},
+        {0, sy, 0},
+        {0, 0, 1},
+    };
+    x = vector[0]*scale[0][0] + vector[1]*scale[1][0] + vector[2]*scale[2][0];
+    y = vector[0]*scale[0][1] + vector[1]*scale[1][1] + vector[2]*scale[2][1];
+    h = vector[0]*scale[0][2] + vector[1]*scale[1][2] + vector[2]*scale[2][2];
+}
+
 void bresenham(Point p1, Point p2, int color, bool solid)
 {
-     int x, y, dx, dy, dx1, dy1, px, py, xe, ye, count=5;
+     float x, y, dx, dy, dx1, dy1, px, py, xe, ye, count=5;
 
      dx = p2.x - p1.x;      //do thay doi x
      dy = p2.y - p1.y;      //do thay doi y
