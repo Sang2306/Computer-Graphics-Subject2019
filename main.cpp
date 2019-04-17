@@ -21,16 +21,22 @@ Point2D::Point2D(float x, float y)
     this->x = x;
     this->y = y;
 }
-void bresenham(Point2D p1, Point2D p2, int color, bool solid=true);
+/*ham ve duong thang va duong tron*/
+void bresenhamLine(Point2D p1, Point2D p2, int color, bool solid=true);
+void drawCircle(Point2D center, int x, int y, int color);
+void bresenhamCircle(Point2D center, float radius, int color);
+/*he toa do 2D va 3D*/
 void draw2DCoor(const Point2D& mid);
 void draw3DCoor();
-void realToMachine(float& x, float& y);
+/*chuyen toa do the gioi thuc ve toa do may tinh*/
+void realToMachine(Point2D& point);
+/*Thuc hien cac phep bien doi cho diem*/
 void translateCompute(float& x, float& y, float& h, float tr_x, float tr_y);
 void scaleCompute(float& x, float& y, float& h, float sx, float sy);
 void rotateCompute(float& x, float& y, float& h, float alpha);
 void chooseCoorSystem();
 void chooseObject2Draw();
-//////////GLOBAL VAR///////////
+//////////////////////////////////////GLOBAL VAR///////////////////////////////////////////////////
 int width = 1300, height = 680;
 const float midX = width/2;
 const float midY = height/2;
@@ -38,26 +44,20 @@ const float midY = height/2;
 int main(int argc, char* argv[]){
     initwindow(width, height, "KYTHUATDOHOA");
     chooseCoorSystem();
-    //chay thu thuat toan tinh tien
-    float x = 12, y = 12, h = 1;
-    float z = x, c = y;
-    realToMachine(z, c);
-    putpixel(z,c,YELLOW);
-    //translateCompute(x, y, h, -16, -16);
-    //scaleCompute(x, y, h, 3.5, 2.6);
-    //rotateCompute(x, y, h, 90);
-    realToMachine(x, y);
-    putpixel(x,y,LIGHTCYAN);
+    Point2D goc(23, -10);
+    realToMachine(goc);
+    bresenhamCircle(goc, 100, LIGHTGREEN);
     //chooseObject2Draw();
     getch();
     closegraph();
     return EXIT_SUCCESS;
 }
 //////////////////////////////////////END MAIN////////////////////////////////////////////////////
+//////////////////////////////////////START BASIC FUNCTION////////////////////////////////////////
 void chooseCoorSystem()
 {
     Point2D origin(0, 0);               //goc toa do
-    realToMachine(origin.x, origin.y);  //chuyen sang toa do machine
+    realToMachine(origin);              //chuyen sang toa do machine
     again:
     Print_at(0, 0, "---CHON HE TOA DO---");
     Print_at(5, 1, "1: 2D");
@@ -85,17 +85,17 @@ void chooseObject2Draw()
     Print_at(0, 3, ">>>");
 }
 
-void realToMachine(float& x, float& y)
+void realToMachine(Point2D& point)
 {
     /*
         Chuyen diem x,y thanh toa do may tinh
         5 : don vi
     */
-    x = x*5 + midX;
-    if(y < 0)
-        y = y*5*-1 + midY;
+    point.x = point.x*5 + midX;
+    if(point.y < 0)
+        point.y = point.y*5*-1 + midY;
     else
-        y = midY - y*5;
+        point.y = midY - point.y*5;
 }
 
 void translateCompute(float& x, float& y, float& h, float tr_x, float tr_y)
@@ -137,7 +137,7 @@ void rotateCompute(float& x, float& y, float& h, float alpha)
     h = vector[0]*rotate[0][2] + vector[1]*rotate[1][2] + vector[2]*rotate[2][2];
 }
 
-void bresenham(Point2D p1, Point2D p2, int color, bool solid)
+void bresenhamLine(Point2D p1, Point2D p2, int color, bool solid)
 {
      float x, y, dx, dy, dx1, dy1, px, py, xe, ye, count=5;
 
@@ -226,15 +226,71 @@ void bresenham(Point2D p1, Point2D p2, int color, bool solid)
      }
 }
 
+void drawCircle(Point2D center, int x, int y, int color)
+{
+    putpixel(center.x + x, center.y + y, color);
+    putpixel(center.x - x, center.y + y, color);
+    putpixel(center.x + x, center.y - y, color);
+    putpixel(center.x - x, center.y - y, color);
+    putpixel(center.x + y, center.y + x, color);
+    putpixel(center.x - y, center.y + x, color);
+    putpixel(center.x + y, center.y - x, color);
+    putpixel(center.x - y, center.y - x, color);
+    /**float points[][2] = {
+        {center.x + x, center.y + y},
+        {center.x - x, center.y + y},
+        {center.x + x, center.y - y},
+        {center.x - x, center.y - y},
+        {center.x + y, center.y + x},
+        {center.x - y, center.y + x},
+        {center.x + y, center.y - x},
+        {center.x - y, center.y - x},
+    };
+
+    realToMachine(points[0][0], points[0][1]);realToMachine(points[1][0], points[1][1]);
+    realToMachine(points[2][0], points[2][1]);realToMachine(points[3][0], points[3][1]);
+    realToMachine(points[4][0], points[4][1]);realToMachine(points[5][0], points[5][1]);
+    realToMachine(points[6][0], points[6][1]);realToMachine(points[7][0], points[7][1]);
+
+    putpixel(points[0][0], points[0][1], color);
+    putpixel(points[1][0], points[1][1], color);
+    putpixel(points[2][0], points[2][1], color);
+    putpixel(points[3][0], points[3][1], color);
+    putpixel(points[4][0], points[4][1], color);
+    putpixel(points[5][0], points[5][1], color);
+    putpixel(points[6][0], points[6][1], color);
+    putpixel(points[7][0], points[7][1], color);**/
+}
+
+void bresenhamCircle(Point2D center, float r, int color)
+{
+    int x = 0, y = r;
+    int p = 3 - 2 * r;
+    drawCircle(center, x, y, color);
+    while (y >= x)
+    {
+        x++;
+        if (p > 0)
+        {
+            y--;
+            p = p + 4 * (x - y) + 10;
+        }
+        else
+            p = p + 4 * x + 6;
+        drawCircle(center, x, y, color);
+    }
+}
+
 void draw2DCoor(const Point2D& mid)
 {
-    bresenham(Point2D(0, mid.y), Point2D(width, mid.y), WHITE, false); outtextxy(width-12, mid.y, "X");   //X
-    bresenham(Point2D(mid.x, 0), Point2D(mid.x, height), WHITE, false); outtextxy(mid.x, 0, "Y");         //Y
+    bresenhamLine(Point2D(0, mid.y), Point2D(width, mid.y), WHITE, false); outtextxy(width-12, mid.y, "X");   //X
+    bresenhamLine(Point2D(mid.x, 0), Point2D(mid.x, height), WHITE, false); outtextxy(mid.x, 0, "Y");         //Y
 }
 
 void draw3DCoor()
 {
-    bresenham(Point2D(midX, 0), Point2D(midX, midY), WHITE, false); outtextxy(midX, 0, "Y");                   //Y
-    bresenham(Point2D(0, height), Point2D(midX, midY), WHITE, false); outtextxy(8, height-24, "Z");            //Z
-    bresenham(Point2D(width, height), Point2D(midX, midY), WHITE, false); outtextxy(width-12, height-24, "X"); //X
+    bresenhamLine(Point2D(midX, 0), Point2D(midX, midY), WHITE, false); outtextxy(midX, 0, "Y");                   //Y
+    bresenhamLine(Point2D(0, height), Point2D(midX, midY), WHITE, false); outtextxy(8, height-24, "Z");            //Z
+    bresenhamLine(Point2D(width, height), Point2D(midX, midY), WHITE, false); outtextxy(width-12, height-24, "X"); //X
 }
+//////////////////////////////////////END BASIC FUNCTION//////////////////////////////////////////
