@@ -5,21 +5,21 @@
 #include "consolelib.h"
 #define PI 3.141592654
 struct Point2D{
-    float x;
-    float y;
+    float x, y, h;
     Point2D();
     Point2D(float x, float y);
 };
 
 Point2D::Point2D()
 {
-    x = y = -1;
+    x = y = h = -1;
 }
 
 Point2D::Point2D(float x, float y)
 {
     this->x = x;
     this->y = y;
+    this->h = 1;
 }
 /*ham ve duong thang va duong tron*/
 void bresenhamLine(Point2D p1, Point2D p2, int color, bool solid=true);
@@ -31,23 +31,20 @@ void draw3DCoor();
 /*chuyen toa do the gioi thuc ve toa do may tinh*/
 void realToMachine(Point2D& point);
 /*Thuc hien cac phep bien doi cho diem*/
-void translateCompute(float& x, float& y, float& h, float tr_x, float tr_y);
-void scaleCompute(float& x, float& y, float& h, float sx, float sy);
-void rotateCompute(float& x, float& y, float& h, float alpha);
+void translateCompute(Point2D& point, float tr_x, float tr_y);
+void scaleCompute(Point2D& point, float sx, float sy);
+void rotateCompute(Point2D& point, float alpha);
 void chooseCoorSystem();
 void chooseObject2Draw();
 //////////////////////////////////////GLOBAL VAR///////////////////////////////////////////////////
-int width = 1300, height = 680;
+int width = 1280, height = 680;
 const float midX = width/2;
 const float midY = height/2;
 //////////////////////////////////////MAIN FUNC////////////////////////////////////////////////////
 int main(int argc, char* argv[]){
     initwindow(width, height, "KYTHUATDOHOA");
     chooseCoorSystem();
-    Point2D goc(23, -10);
-    realToMachine(goc);
-    bresenhamCircle(goc, 100, LIGHTGREEN);
-    //chooseObject2Draw();
+    chooseObject2Draw();
     getch();
     closegraph();
     return EXIT_SUCCESS;
@@ -98,43 +95,43 @@ void realToMachine(Point2D& point)
         point.y = midY - point.y*5;
 }
 
-void translateCompute(float& x, float& y, float& h, float tr_x, float tr_y)
+void translateCompute(Point2D& point, float tr_x, float tr_y)
 {
-    float vector[3] = {x, y, h};
+    float vector[3] = {point.x, point.y, point.h};
     float translate[3][3] = {
         {1, 0, 0},
         {0, 1, 0},
         {tr_x, tr_y, 1},
     };
-    x = vector[0]*translate[0][0] + vector[1]*translate[1][0] + vector[2]*translate[2][0];
-    y = vector[0]*translate[0][1] + vector[1]*translate[1][1] + vector[2]*translate[2][1];
-    h = vector[0]*translate[0][2] + vector[1]*translate[1][2] + vector[2]*translate[2][2];
+    point.x = vector[0]*translate[0][0] + vector[1]*translate[1][0] + vector[2]*translate[2][0];
+    point.y = vector[0]*translate[0][1] + vector[1]*translate[1][1] + vector[2]*translate[2][1];
+    point.h = vector[0]*translate[0][2] + vector[1]*translate[1][2] + vector[2]*translate[2][2];
 }
 
-void scaleCompute(float& x, float& y, float& h, float sx, float sy)
+void scaleCompute(Point2D& point, float sx, float sy)
 {
-    float vector[3] = {x, y, h};
+    float vector[3] = {point.x, point.y, point.h};
     float scale[3][3] = {
         {sx, 0, 0},
         {0, sy, 0},
         {0, 0, 1},
     };
-    x = vector[0]*scale[0][0] + vector[1]*scale[1][0] + vector[2]*scale[2][0];
-    y = vector[0]*scale[0][1] + vector[1]*scale[1][1] + vector[2]*scale[2][1];
-    h = vector[0]*scale[0][2] + vector[1]*scale[1][2] + vector[2]*scale[2][2];
+    point.x = vector[0]*scale[0][0] + vector[1]*scale[1][0] + vector[2]*scale[2][0];
+    point.y = vector[0]*scale[0][1] + vector[1]*scale[1][1] + vector[2]*scale[2][1];
+    point.h = vector[0]*scale[0][2] + vector[1]*scale[1][2] + vector[2]*scale[2][2];
 }
 
-void rotateCompute(float& x, float& y, float& h, float alpha)
+void rotateCompute(Point2D& point, float alpha)
 {
-    float vector[3] = {x, y, h};
+    float vector[3] = {point.x, point.y, point.h};
     float rotate[3][3] = {
         {cos(alpha * PI/ 180), sin(alpha * PI/ 180), 0},
         {sin(alpha * PI/ 180)*-1, cos(alpha * PI/ 180), 0},
         {0, 0, 1},
     };
-    x = vector[0]*rotate[0][0] + vector[1]*rotate[1][0] + vector[2]*rotate[2][0];
-    y = vector[0]*rotate[0][1] + vector[1]*rotate[1][1] + vector[2]*rotate[2][1];
-    h = vector[0]*rotate[0][2] + vector[1]*rotate[1][2] + vector[2]*rotate[2][2];
+    point.x = vector[0]*rotate[0][0] + vector[1]*rotate[1][0] + vector[2]*rotate[2][0];
+    point.y = vector[0]*rotate[0][1] + vector[1]*rotate[1][1] + vector[2]*rotate[2][1];
+    point.h = vector[0]*rotate[0][2] + vector[1]*rotate[1][2] + vector[2]*rotate[2][2];
 }
 
 void bresenhamLine(Point2D p1, Point2D p2, int color, bool solid)
