@@ -17,7 +17,7 @@ Point::Point(int x, int y)
     this->x = x;
     this->y = y;
 }
-void bresenham(Point p1, Point p2, bool solid = true);
+void bresenham(Point p1, Point p2, int color, bool solid=true);
 void draw2DCoor();
 void draw3DCoor();
 void realToMachine(int& x, int& y);
@@ -27,6 +27,7 @@ void chooseObject2Draw();
 int width = 1200, height = 600;
 int midX = (int)width/2;
 int midY = (int)height/2;
+//////////////////////////////////////MAIN FUNC////////////////////////////////////////////////////
 int main(int argc, char* argv[]){
     initwindow(width, height, "KYTHUATDOHOA");
     chooseCoorSystem();
@@ -35,6 +36,7 @@ int main(int argc, char* argv[]){
     closegraph();
     return EXIT_SUCCESS;
 }
+//////////////////////////////////////END MAIN////////////////////////////////////////////////////
 void chooseCoorSystem()
 {
     again:
@@ -77,61 +79,104 @@ void realToMachine(int& x, int& y)
         y = midY - y*5;
 }
 
-void bresenham(Point p1, Point p2, bool solid)
+void bresenham(Point p1, Point p2, int color, bool solid)
 {
-    /*
-        solid: neu dung thi ve lien net, nguoc lai ve ----
-        thuat toan tren wikipedia
-    */
-   int x0 = p1.x, y0 = p1.y, x1 = p2.x, y1 = p2.y;
-   int dx = abs(x1-x0);
-   int dy = abs(y1-y0);
-   int sx, sy;
-   if(x0 < x1) sx = 1; else sx = -1;
-   if(y0 < y1) sy = 1; else sy = -1;
-   int err = dx - dy;
-   int e2, count = 4;
-   while(true)
-   {
-       if(!solid)
-       {
+     int x, y, dx, dy, dx1, dy1, px, py, xe, ye, count=5;
 
-           if(count == 4)
-           {
-               putpixel(x0, y0, WHITE);
-           }
-           count--;
-           if (count == 0){
-                count = 4;
-           }
-       }else
-            putpixel(x0, y0, WHITE);
+     dx = p2.x - p1.x;      //do thay doi x
+     dy = p2.y - p1.y;      //do thay doi y
+     dx1 = abs(dx);
+     dy1 = abs(dy);
+     px = 2*dy1 - dx1;  //px dau tien neu m < 1
+     py = 2*dx1 - dy1;  //py dau tien neu m >= 1
 
-       if(x0 == x1 && y0 == y1) break;
-       e2 = 2*err;
-       if(e2 > -dy)
-       {
-           err = err - dy;
-           x0 = x0 + sx;
-       }
-       if(e2 < dx)
-       {
-           err = err + dx;
-           y0 = y0 + sy;
-       }
-   }
+     if(dy1 <= dx1)     //tim y theo x vi chieu doc nho hon (m < 1)
+     {
+          if(dx >= 0)   //diem cuoi ben phai hoac cung vi tri diem dau -> ve tu trai sang phai
+          {
+               x = p1.x;
+               y = p1.y;
+               xe = p2.x;
+          }
+          else          //diem cuoi ben trai -> ve tu phai sang trai
+          {
+               x = p2.x;
+               y = p2.y;
+               xe = p1.x;
+          }
+          while(x < xe) //loop tu x dau -> x cuoi, chon y trong qua trinh do
+          {
+                if(!solid)
+                {
+                    if (count==5)
+                        putpixel(x, y, color);
+                }
+                else
+                    putpixel(x, y, color);
+
+               x = x + 1;
+               if(px < 0)
+                    px = px + 2*dy1;
+               else
+               {
+                    if((dx < 0 && dy < 0) || (dx > 0 && dy > 0))
+                        y = y + 1;
+                    else
+                        y = y - 1;
+                    px = px + 2*(dy1 - dx1);
+               }
+               count = count==0 ? 5 : count-1;
+          }
+     }
+     else //tim x theo y vi chieu ngang nho hon (m >= 1)
+     {
+          if(dy >= 0)
+          {
+               x = p1.x;
+               y = p1.y;
+               ye = p2.y;
+          }
+          else
+          {
+               x = p2.x;
+               y = p2.y;
+               ye = p1.y;
+          }
+          while(y < ye)
+          {
+                if(!solid)
+                {
+                    if (count==5)
+                        putpixel(x, y, color);
+                }
+                else
+                    putpixel(x, y, color);
+
+               y = y + 1;
+               if(py <= 0)
+                    py = py + 2*dx1;
+               else
+               {
+                    if((dx < 0 && dy < 0) || (dx > 0 && dy > 0))
+                        x = x + 1;
+                    else
+                        x = x - 1;
+                    py = py + 2*(dx1 - dy1);
+               }
+               count = count==0 ? 5 : count-1;
+          }
+     }
 }
 
 void draw2DCoor()
 {
-    bresenham(Point(0, midY), Point(width, midY), false);
-    bresenham(Point(midX, 0), Point(midX, height), false);
+    bresenham(Point(0, midY), Point(width, midY), WHITE, false);//X
+    bresenham(Point(midX, 0), Point(midX, height), WHITE, false);//Y
 }
 
 void draw3DCoor()
 {
-    bresenham(Point(midX, 0), Point(midX, midY), false);
-    ////////////////////////////////////////////////////
-    bresenham(Point(0, height), Point(midX, midY), false);
-    bresenham(Point(width, height), Point(midX, midY), false);
+    bresenham(Point(midX, 0), Point(midX, midY), WHITE, false);     //Y
+    bresenham(Point(0, height), Point(midX, midY), WHITE, false);   //Z
+    bresenham(Point(width, height), Point(midX, midY), WHITE, false);//X
 }
