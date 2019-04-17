@@ -4,25 +4,25 @@
 #include <graphics.h>
 #include "consolelib.h"
 #define PI 3.141592654
-struct Point{
+struct Point2D{
     float x;
     float y;
-    Point();
-    Point(float x, float y);
+    Point2D();
+    Point2D(float x, float y);
 };
 
-Point::Point()
+Point2D::Point2D()
 {
     x = y = -1;
 }
 
-Point::Point(float x, float y)
+Point2D::Point2D(float x, float y)
 {
     this->x = x;
     this->y = y;
 }
-void bresenham(Point p1, Point p2, int color, bool solid=true);
-void draw2DCoor();
+void bresenham(Point2D p1, Point2D p2, int color, bool solid=true);
+void draw2DCoor(const Point2D& mid);
 void draw3DCoor();
 void realToMachine(float& x, float& y);
 void translateCompute(float& x, float& y, float& h, float tr_x, float tr_y);
@@ -32,8 +32,8 @@ void chooseCoorSystem();
 void chooseObject2Draw();
 //////////GLOBAL VAR///////////
 int width = 1300, height = 680;
-float midX = width/2;
-float midY = height/2;
+const float midX = width/2;
+const float midY = height/2;
 //////////////////////////////////////MAIN FUNC////////////////////////////////////////////////////
 int main(int argc, char* argv[]){
     initwindow(width, height, "KYTHUATDOHOA");
@@ -56,6 +56,8 @@ int main(int argc, char* argv[]){
 //////////////////////////////////////END MAIN////////////////////////////////////////////////////
 void chooseCoorSystem()
 {
+    Point2D origin(0, 0);               //goc toa do
+    realToMachine(origin.x, origin.y);  //chuyen sang toa do machine
     again:
     Print_at(0, 0, "---CHON HE TOA DO---");
     Print_at(5, 1, "1: 2D");
@@ -69,7 +71,7 @@ void chooseCoorSystem()
         goto again;
     }
     if(choice == 1)
-        draw2DCoor();
+        draw2DCoor(origin);
     else if (choice == 2)
         draw3DCoor();
 }
@@ -135,7 +137,7 @@ void rotateCompute(float& x, float& y, float& h, float alpha)
     h = vector[0]*rotate[0][2] + vector[1]*rotate[1][2] + vector[2]*rotate[2][2];
 }
 
-void bresenham(Point p1, Point p2, int color, bool solid)
+void bresenham(Point2D p1, Point2D p2, int color, bool solid)
 {
      float x, y, dx, dy, dx1, dy1, px, py, xe, ye, count=5;
 
@@ -224,15 +226,15 @@ void bresenham(Point p1, Point p2, int color, bool solid)
      }
 }
 
-void draw2DCoor()
+void draw2DCoor(const Point2D& mid)
 {
-    bresenham(Point(0, midY), Point(width, midY), WHITE, false); outtextxy(width-12, midY, "X");//X
-    bresenham(Point(midX, 0), Point(midX, height), WHITE, false); outtextxy(midX, 0, "Y");      //Y
+    bresenham(Point2D(0, mid.y), Point2D(width, mid.y), WHITE, false); outtextxy(width-12, mid.y, "X");   //X
+    bresenham(Point2D(mid.x, 0), Point2D(mid.x, height), WHITE, false); outtextxy(mid.x, 0, "Y");         //Y
 }
 
 void draw3DCoor()
 {
-    bresenham(Point(midX, 0), Point(midX, midY), WHITE, false); outtextxy(midX, 0, "Y");                   //Y
-    bresenham(Point(0, height), Point(midX, midY), WHITE, false); outtextxy(8, height-24, "Z");            //Z
-    bresenham(Point(width, height), Point(midX, midY), WHITE, false); outtextxy(width-12, height-24, "X"); //X
+    bresenham(Point2D(midX, 0), Point2D(midX, midY), WHITE, false); outtextxy(midX, 0, "Y");                   //Y
+    bresenham(Point2D(0, height), Point2D(midX, midY), WHITE, false); outtextxy(8, height-24, "Z");            //Z
+    bresenham(Point2D(width, height), Point2D(midX, midY), WHITE, false); outtextxy(width-12, height-24, "X"); //X
 }
