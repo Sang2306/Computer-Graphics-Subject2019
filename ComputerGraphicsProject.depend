@@ -20,3 +20,19 @@
 	<graphics.h>
 	<math.h>
 
+1555684964 source:c:\users\kim yen\desktop\computer-graphics-subject2019\main.cpp
+	<iostream>
+	<cmath>
+	<cstdio>
+	<graphics.h>
+	"consolelib.h"
+
+1266072614 c:\program files (x86)\codeblocks-ep\sdk\winbgim\include\graphics.h
+	<windows.h>
+	<limits.h>
+	<sstream>
+
+1555492891 c:\users\kim yen\desktop\computer-graphics-subject2019\consolelib.h
+	<iostream>
+	<windows.h>
+

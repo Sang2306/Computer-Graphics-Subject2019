@@ -36,6 +36,57 @@ void scaleCompute(Point2D& point, float sx, float sy);
 void rotateCompute(Point2D& point, float alpha);
 void chooseCoorSystem();
 void chooseObject2Draw();
+//ham ve den tin hieu giao thong
+void VeDenGiaoThong()
+{
+    Point2D topLeft (45, 50);
+    Point2D bottomRight (65, 20);
+
+    Point2D bottomLeft(topLeft.x, bottomRight.y); //(45, 20)
+    Point2D topRight(bottomRight.x, topLeft.y); //(65, 50)
+
+    realToMachine(topLeft);
+    realToMachine(bottomRight);
+    realToMachine(bottomLeft);
+    realToMachine(topRight);
+
+    bresenhamLine(topLeft, topRight, WHITE);
+    bresenhamLine(bottomRight, topRight, WHITE);
+    bresenhamLine(bottomLeft, bottomRight, WHITE);
+    bresenhamLine(topLeft, bottomLeft, WHITE);
+
+    Point2D topLeftUp (49, 54);
+    realToMachine(topLeftUp);
+    bresenhamLine(topLeftUp, topLeft, WHITE);
+
+    Point2D bottomRightUp (69, 24);
+    realToMachine(bottomRightUp);
+    bresenhamLine(bottomRightUp, bottomRight, WHITE);
+
+    Point2D topRightUp (bottomRightUp.x, topLeftUp.y);
+    bresenhamLine(topRightUp, topRight, WHITE);
+
+    bresenhamLine(topRightUp, topLeftUp, WHITE);
+    bresenhamLine(topRightUp, bottomRightUp, WHITE);
+
+    Point2D redLight (55, 44);
+    realToMachine(redLight);
+    bresenhamCircle(redLight, 3*5, WHITE);
+    setfillstyle(SOLID_FILL, RED);
+    floodfill(redLight.x, redLight.y, WHITE);
+
+    Point2D yellowLight (55, 36);
+    realToMachine(yellowLight);
+    bresenhamCircle(yellowLight, 3*5, WHITE);
+    setfillstyle(SOLID_FILL, YELLOW);
+    floodfill(yellowLight.x, yellowLight.y, WHITE);
+
+    Point2D blueLight (55, 28);
+    realToMachine(blueLight);
+    bresenhamCircle(blueLight, 3*5, WHITE);
+    setfillstyle(SOLID_FILL, BLUE);
+    floodfill(blueLight.x, blueLight.y, WHITE);
+}
 //////////////////////////////////////GLOBAL VAR///////////////////////////////////////////////////
 int width = 1280, height = 680;
 const float midX = width/2;
@@ -44,6 +95,12 @@ const float midY = height/2;
 int main(int argc, char* argv[]){
     initwindow(width, height, "KYTHUATDOHOA");
     chooseCoorSystem();
+    /*Point2D boobs(20, 20);
+    realToMachine(boobs);
+    bresenhamCircle(boobs, 10*5, LIGHTCYAN);
+    setfillstyle( XHATCH_FILL, YELLOW );
+    floodfill( boobs.x, boobs.y, LIGHTCYAN );*/
+    VeDenGiaoThong();
     chooseObject2Draw();
     getch();
     closegraph();
