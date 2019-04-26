@@ -37,56 +37,7 @@ void rotateCompute(Point2D& point, float alpha);
 void chooseCoorSystem();
 void chooseObject2Draw();
 //ham ve den tin hieu giao thong
-void VeDenGiaoThong()
-{
-    Point2D topLeft (45, 50);
-    Point2D bottomRight (65, 20);
-
-    Point2D bottomLeft(topLeft.x, bottomRight.y); //(45, 20)
-    Point2D topRight(bottomRight.x, topLeft.y); //(65, 50)
-
-    realToMachine(topLeft);
-    realToMachine(bottomRight);
-    realToMachine(bottomLeft);
-    realToMachine(topRight);
-
-    bresenhamLine(topLeft, topRight, WHITE);
-    bresenhamLine(bottomRight, topRight, WHITE);
-    bresenhamLine(bottomLeft, bottomRight, WHITE);
-    bresenhamLine(topLeft, bottomLeft, WHITE);
-
-    Point2D topLeftUp (49, 54);
-    realToMachine(topLeftUp);
-    bresenhamLine(topLeftUp, topLeft, WHITE);
-
-    Point2D bottomRightUp (69, 24);
-    realToMachine(bottomRightUp);
-    bresenhamLine(bottomRightUp, bottomRight, WHITE);
-
-    Point2D topRightUp (bottomRightUp.x, topLeftUp.y);
-    bresenhamLine(topRightUp, topRight, WHITE);
-
-    bresenhamLine(topRightUp, topLeftUp, WHITE);
-    bresenhamLine(topRightUp, bottomRightUp, WHITE);
-
-    Point2D redLight (55, 44);
-    realToMachine(redLight);
-    bresenhamCircle(redLight, 3*5, WHITE);
-    setfillstyle(SOLID_FILL, RED);
-    floodfill(redLight.x, redLight.y, WHITE);
-
-    Point2D yellowLight (55, 36);
-    realToMachine(yellowLight);
-    bresenhamCircle(yellowLight, 3*5, WHITE);
-    setfillstyle(SOLID_FILL, YELLOW);
-    floodfill(yellowLight.x, yellowLight.y, WHITE);
-
-    Point2D blueLight (55, 28);
-    realToMachine(blueLight);
-    bresenhamCircle(blueLight, 3*5, WHITE);
-    setfillstyle(SOLID_FILL, BLUE);
-    floodfill(blueLight.x, blueLight.y, WHITE);
-}
+void drawTrafficLight();
 //////////////////////////////////////GLOBAL VAR///////////////////////////////////////////////////
 int width = 1280, height = 680;
 const float midX = width/2;
@@ -95,12 +46,6 @@ const float midY = height/2;
 int main(int argc, char* argv[]){
     initwindow(width, height, "KYTHUATDOHOA");
     chooseCoorSystem();
-    /*Point2D boobs(20, 20);
-    realToMachine(boobs);
-    bresenhamCircle(boobs, 10*5, LIGHTCYAN);
-    setfillstyle( XHATCH_FILL, YELLOW );
-    floodfill( boobs.x, boobs.y, LIGHTCYAN );*/
-    VeDenGiaoThong();
     chooseObject2Draw();
     getch();
     closegraph();
@@ -110,8 +55,6 @@ int main(int argc, char* argv[]){
 //////////////////////////////////////START BASIC FUNCTION////////////////////////////////////////
 void chooseCoorSystem()
 {
-    Point2D origin(0, 0);               //goc toa do
-    realToMachine(origin);              //chuyen sang toa do machine
     again:
     Print_at(0, 0, "---CHON HE TOA DO---");
     Print_at(5, 1, "1: 2D");
@@ -125,18 +68,35 @@ void chooseCoorSystem()
         goto again;
     }
     if(choice == 1)
+    {
+        Point2D origin(0, 0);               //goc toa do
+        realToMachine(origin);              //chuyen sang toa do machine
         draw2DCoor(origin);
+    }
     else if (choice == 2)
         draw3DCoor();
 }
 
 void chooseObject2Draw()
 {
+    again:
     Clear_at(0, 0, 10, 10);
     Print_at(0, 0, "---CHON VAT THE DE VE 2D---");
     Print_at(5, 1, "1: TRAFFIC LIGHTS");
     Print_at(5, 2, "2: DRAGON BALLS");
     Print_at(0, 3, ">>>");
+    short choice;
+    std::cin >> choice;
+    if(choice != 1 && choice !=2)
+    {
+        Clear_at(0, 0, 10, 10);
+        goto again;
+    }
+    if(choice == 1)
+        drawTrafficLight();
+    else if (choice == 2)
+        return;
+
 }
 
 void realToMachine(Point2D& point)
@@ -290,30 +250,6 @@ void drawCircle(Point2D center, int x, int y, int color)
     putpixel(center.x - y, center.y + x, color);
     putpixel(center.x + y, center.y - x, color);
     putpixel(center.x - y, center.y - x, color);
-    /**float points[][2] = {
-        {center.x + x, center.y + y},
-        {center.x - x, center.y + y},
-        {center.x + x, center.y - y},
-        {center.x - x, center.y - y},
-        {center.x + y, center.y + x},
-        {center.x - y, center.y + x},
-        {center.x + y, center.y - x},
-        {center.x - y, center.y - x},
-    };
-
-    realToMachine(points[0][0], points[0][1]);realToMachine(points[1][0], points[1][1]);
-    realToMachine(points[2][0], points[2][1]);realToMachine(points[3][0], points[3][1]);
-    realToMachine(points[4][0], points[4][1]);realToMachine(points[5][0], points[5][1]);
-    realToMachine(points[6][0], points[6][1]);realToMachine(points[7][0], points[7][1]);
-
-    putpixel(points[0][0], points[0][1], color);
-    putpixel(points[1][0], points[1][1], color);
-    putpixel(points[2][0], points[2][1], color);
-    putpixel(points[3][0], points[3][1], color);
-    putpixel(points[4][0], points[4][1], color);
-    putpixel(points[5][0], points[5][1], color);
-    putpixel(points[6][0], points[6][1], color);
-    putpixel(points[7][0], points[7][1], color);**/
 }
 
 void bresenhamCircle(Point2D center, float r, int color)
@@ -348,3 +284,55 @@ void draw3DCoor()
     bresenhamLine(Point2D(width, height), Point2D(midX, midY), WHITE, false); outtextxy(width-12, height-24, "X"); //X
 }
 //////////////////////////////////////END BASIC FUNCTION//////////////////////////////////////////
+
+//////////////////////////////////////==================//////////////////////////////////////////
+void drawTrafficLight()
+{
+    Point2D topLeft (45, 50);
+    Point2D bottomRight (65, 20);
+
+    Point2D bottomLeft(topLeft.x, bottomRight.y); //(45, 20)
+    Point2D topRight(bottomRight.x, topLeft.y); //(65, 50)
+
+    realToMachine(topLeft);
+    realToMachine(bottomRight);
+    realToMachine(bottomLeft);
+    realToMachine(topRight);
+
+    bresenhamLine(topLeft, topRight, WHITE);
+    bresenhamLine(bottomRight, topRight, WHITE);
+    bresenhamLine(bottomLeft, bottomRight, WHITE);
+    bresenhamLine(topLeft, bottomLeft, WHITE);
+
+    Point2D topLeftUp (49, 54);
+    realToMachine(topLeftUp);
+    bresenhamLine(topLeftUp, topLeft, WHITE);
+
+    Point2D bottomRightUp (69, 24);
+    realToMachine(bottomRightUp);
+    bresenhamLine(bottomRightUp, bottomRight, WHITE);
+
+    Point2D topRightUp (bottomRightUp.x, topLeftUp.y);
+    bresenhamLine(topRightUp, topRight, WHITE);
+
+    bresenhamLine(topRightUp, topLeftUp, WHITE);
+    bresenhamLine(topRightUp, bottomRightUp, WHITE);
+
+    Point2D redLight (55, 44);
+    realToMachine(redLight);
+    bresenhamCircle(redLight, 3*5, WHITE);
+    setfillstyle(SOLID_FILL, LIGHTRED);
+    floodfill(redLight.x, redLight.y, WHITE);
+
+    Point2D yellowLight (55, 36);
+    realToMachine(yellowLight);
+    bresenhamCircle(yellowLight, 3*5, WHITE);
+    setfillstyle(SOLID_FILL, YELLOW);
+    floodfill(yellowLight.x, yellowLight.y, WHITE);
+
+    Point2D greenLight (55, 28);
+    realToMachine(greenLight);
+    bresenhamCircle(greenLight, 3*5, WHITE);
+    setfillstyle(SOLID_FILL, GREEN);
+    floodfill(greenLight.x, greenLight.y, WHITE);
+}
