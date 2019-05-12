@@ -279,9 +279,10 @@ void draw2DCoor(const Point2D& mid)
 
 void draw3DCoor()
 {
+
+    bresenhamLine(Point2D(width, midY), Point2D(midX, midY), WHITE, false); outtextxy(width-12, midY, "X");        //X
     bresenhamLine(Point2D(midX, 0), Point2D(midX, midY), WHITE, false); outtextxy(midX, 0, "Y");                   //Y
     bresenhamLine(Point2D(0, height), Point2D(midX, midY), WHITE, false); outtextxy(8, height-24, "Z");            //Z
-    bresenhamLine(Point2D(width, height), Point2D(midX, midY), WHITE, false); outtextxy(width-12, height-24, "X"); //X
 }
 //////////////////////////////////////END BASIC FUNCTION//////////////////////////////////////////
 
