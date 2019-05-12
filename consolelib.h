@@ -68,6 +68,15 @@ void Print_at(int x, int y, _Tp1 data1)
 	Moveto(x, y);
 	cout << data1;
 }
+
+void GetWindowSize(int &Width, int &Height)
+{
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    Width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    Height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+}
+
 void Normal(short fontColor, short backgroundColor)
 {
 	Setcolor(fontColor);

@@ -34,6 +34,7 @@ void realToMachine(Point2D& point);
 void translateCompute(Point2D& point, float tr_x, float tr_y);
 void scaleCompute(Point2D& point, float sx, float sy);
 void rotateCompute(Point2D& point, float alpha);
+void initMenuWindow(); //Menu hien thi tuy chon va hien thi thong tin cua doi tuong
 void chooseCoorSystem();
 void chooseObject2Draw();
 //ham ve den tin hieu giao thong
@@ -45,14 +46,23 @@ const float midY = height/2;
 //////////////////////////////////////MAIN FUNC////////////////////////////////////////////////////
 int main(int argc, char* argv[]){
     initwindow(width, height, "KYTHUATDOHOA");
-    chooseCoorSystem();
-    chooseObject2Draw();
+    initMenuWindow();
     getch();
     closegraph();
     return EXIT_SUCCESS;
 }
 //////////////////////////////////////END MAIN////////////////////////////////////////////////////
 //////////////////////////////////////START BASIC FUNCTION////////////////////////////////////////
+void initMenuWindow()
+{
+    int width, height;
+    GetWindowSize(width, height);
+    //Separate main menu from information pannel
+    for(int y = 0; y < height; y++)
+        Print_at(width/2, y, (char)124);
+    Print_at(width/2, 0, "< THONG TIN >");
+    chooseCoorSystem();
+}
 void chooseCoorSystem()
 {
     again:
@@ -64,39 +74,50 @@ void chooseCoorSystem()
     std::cin >> choice;
     if(choice != 1 && choice !=2)
     {
-        Clear_at(0, 0, 10, 10);
+        Clear_at(0, 0, 20, 20);
         goto again;
     }
     if(choice == 1)
     {
+        cleardevice();
         Point2D origin(0, 0);               //goc toa do
         realToMachine(origin);              //chuyen sang toa do machine
         draw2DCoor(origin);
+        chooseObject2Draw();                //Menu hien thi chon do vat 2d de ve
     }
     else if (choice == 2)
+    {
+        cleardevice();
         draw3DCoor();
+        showerrorbox("I have nothing, i have nothing without youuuuuuu.....");
+    }
 }
 
 void chooseObject2Draw()
 {
     again:
-    Clear_at(0, 0, 10, 10);
+    Clear_at(0, 0, 20, 20);
     Print_at(0, 0, "---CHON VAT THE DE VE 2D---");
     Print_at(5, 1, "1: TRAFFIC LIGHTS");
-    Print_at(5, 2, "2: DRAGON BALLS");
-    Print_at(0, 3, ">>>");
+    Print_at(5, 2, "2: EMOJI");
+    Print_at(5, 3, "3: ...");
+    Print_at(0, 4, ">>>");
     short choice;
     std::cin >> choice;
-    if(choice != 1 && choice !=2)
+    if(choice != 1 && choice !=2 && choice !=3)
     {
-        Clear_at(0, 0, 10, 10);
+        Clear_at(0, 0, 20, 20);
         goto again;
     }
-    if(choice == 1)
-        drawTrafficLight();
-    else if (choice == 2)
-        return;
-
+    switch(choice)
+    {
+        case 1: drawTrafficLight(); break;
+        case 2: showerrorbox("Chua lam gi het do mem!");
+        case 3: {
+            Clear_at(0, 0, 20, 20);
+            return chooseCoorSystem();
+        }
+    }
 }
 
 void realToMachine(Point2D& point)
