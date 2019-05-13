@@ -30,6 +30,7 @@ void draw2DCoor(const Point2D& mid);
 void draw3DCoor();
 /*chuyen toa do the gioi thuc ve toa do may tinh*/
 void realToMachine(Point2D& point);
+Point2D getPointOz(int unit);
 /*Thuc hien cac phep bien doi cho diem*/
 void translateCompute(Point2D& point, float tr_x, float tr_y);
 void scaleCompute(Point2D& point, float sx, float sy);
@@ -40,7 +41,7 @@ void chooseObject2Draw();
 //ham ve den tin hieu giao thong
 void drawTrafficLight();
 //////////////////////////////////////GLOBAL VAR///////////////////////////////////////////////////
-int width = 1280, height = 680;
+int width = 1080, height = 600;
 const float midX = width/2;
 const float midY = height/2;
 //////////////////////////////////////MAIN FUNC////////////////////////////////////////////////////
@@ -63,6 +64,7 @@ void initMenuWindow()
     Print_at(width/2, 0, "< THONG TIN >");
     chooseCoorSystem();
 }
+
 void chooseCoorSystem()
 {
     again:
@@ -81,7 +83,7 @@ void chooseCoorSystem()
     {
         cleardevice();
         Point2D origin(0, 0);               //goc toa do
-        realToMachine(origin);              //chuyen sang toa do machine
+        realToMachine(origin);              //chuyen sang toa do thuc sang toa do may
         draw2DCoor(origin);
         chooseObject2Draw();                //Menu hien thi chon do vat 2d de ve
     }
@@ -89,7 +91,9 @@ void chooseCoorSystem()
     {
         cleardevice();
         draw3DCoor();
-        showerrorbox("I have nothing, i have nothing without youuuuuuu.....");
+        Point2D pz = getPointOz(50);
+        putpixel(pz.x, pz.y, YELLOW);
+        //showerrorbox("I have nothing, i have nothing without youuuuuuu.....");
     }
 }
 
@@ -131,6 +135,18 @@ void realToMachine(Point2D& point)
         point.y = point.y*5*-1 + midY;
     else
         point.y = midY - point.y*5;
+}
+
+Point2D getPointOz(int unit)
+{
+    /*
+        ham tra ve toa do cua don vi tren truc oz
+    */
+    Point2D point;
+    //chuyen doi toa do cho truc z
+    point.x = midX - unit*5*cos(45); //x = toa do tam.x - don vi * 5 px * cos(45)
+    point.y = midY + unit*5*sin(45); //y = toa do tam.y + don vi * 5 px + sin(45)
+    return point;
 }
 
 void translateCompute(Point2D& point, float tr_x, float tr_y)
@@ -303,7 +319,14 @@ void draw3DCoor()
 
     bresenhamLine(Point2D(width, midY), Point2D(midX, midY), WHITE, false); outtextxy(width-12, midY, "X");        //X
     bresenhamLine(Point2D(midX, 0), Point2D(midX, midY), WHITE, false); outtextxy(midX, 0, "Y");                   //Y
-    bresenhamLine(Point2D(0, height), Point2D(midX, midY), WHITE, false); outtextxy(8, height-24, "Z");            //Z
+    int total_unit = 65; //tong so don vi
+    for(int unit = 0; unit <= total_unit; unit++)
+    {
+        Point2D temp = getPointOz(unit); //lay diem toa do tai moi cham
+        putpixel(temp.x, temp.y, WHITE); //va hien thi len man hinh
+    }
+    Point2D temp = getPointOz(total_unit); //lay diem toa do tai moi cham
+    outtextxy(temp.x, temp.y, "Z");            //Z
 }
 //////////////////////////////////////END BASIC FUNCTION//////////////////////////////////////////
 
