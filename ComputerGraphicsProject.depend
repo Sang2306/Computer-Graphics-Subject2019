@@ -36,3 +36,19 @@
 	<iostream>
 	<windows.h>
 
+1557937057 source:c:\users\sang4vn\desktop\computer-graphics-subject2019\main.cpp
+	<iostream>
+	<cmath>
+	<cstdio>
+	<graphics.h>
+	"consolelib.h"
+
+1266072614 c:\program files\codeblock-edu\codeblocks-ep\sdk\winbgim\include\graphics.h
+	<windows.h>
+	<limits.h>
+	<sstream>
+
+1557675104 c:\users\sang4vn\desktop\computer-graphics-subject2019\consolelib.h
+	<iostream>
+	<windows.h>
+
