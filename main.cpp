@@ -25,6 +25,9 @@ Point2D::Point2D(float x, float y)
 void bresenhamLine(Point2D p1, Point2D p2, int color, bool solid=true);
 void drawCircle(Point2D center, int x, int y, int color);
 void bresenhamCircle(Point2D center, float radius, int color);
+void drawEllipse(Point2D center, int x, int y, int color);
+void bresenhamEllipse(Point2D center, int a, int b, int color);
+void haftBresenhamEllipse(Point2D center, int a, int b, int color);
 /*he toa do 2D va 3D*/
 void draw2DCoor(const Point2D& mid);
 void draw3DCoor();
@@ -40,6 +43,12 @@ void chooseCoorSystem();
 void chooseObject2Draw();
 //ham ve den tin hieu giao thong
 void drawTrafficLight();
+<<<<<<< HEAD
+//ham ve hinh hop
+void veHinhHop(int, int, int);
+=======
+void drawEmojiWow();
+>>>>>>> 8334b1a663dd9c89cd43fb3de7dd8012b529fd6f
 //////////////////////////////////////GLOBAL VAR///////////////////////////////////////////////////
 int width = 1080, height = 600;
 const float midX = width/2;
@@ -93,7 +102,7 @@ void chooseCoorSystem()
         draw3DCoor();
         Point2D pz = getPointOz(50);
         putpixel(pz.x, pz.y, YELLOW);
-        //showerrorbox("I have nothing, i have nothing without youuuuuuu.....");
+        veHinhHop(55, 55, 55);
     }
 }
 
@@ -115,8 +124,19 @@ void chooseObject2Draw()
     }
     switch(choice)
     {
+<<<<<<< HEAD
         case 1: drawTrafficLight(); break;
-        case 2: showerrorbox("Chua lam gi het do mem!");
+        case 2: veHinhHop(5, 5, 5); break;
+=======
+        case 1: {
+                drawTrafficLight();
+                break;
+            }
+        case 2: {
+                drawEmojiWow();
+                break;
+            }
+>>>>>>> 8334b1a663dd9c89cd43fb3de7dd8012b529fd6f
         case 3: {
             Clear_at(0, 0, 20, 20);
             return chooseCoorSystem();
@@ -328,6 +348,70 @@ void draw3DCoor()
     Point2D temp = getPointOz(total_unit); //lay diem toa do tai moi cham
     outtextxy(temp.x, temp.y, "Z");            //Z
 }
+void drawEllipse(Point2D center, int x, int y, int color){
+    putpixel(center.x + x, center.y + y, color);
+    putpixel(center.x - x, center.y + y, color);
+    putpixel(center.x - x, center.y - y, color);
+    putpixel(center.x + x, center.y - y, color);
+}
+
+void bresenhamEllipse(Point2D center, int a, int b, int color){
+    float p, a2, b2;
+    int x, y;
+
+    a2 = a * a;
+    b2 = b * b;
+    //Nhanh 1
+    x = 0; y = b;
+    p = 2 * b2/a2 - 2*b + 1;
+    while(((b2/a2)*(x/y)) < 1 ){
+        drawEllipse(center, x, y, color);
+        if(p < 0){
+            p = p + 2 * (b2 / a2) * (2*x + 3);
+        }
+        else{
+            p = p - 4*y + 2*(b2/a2)*(2*x + 3);
+            y = y - 1;
+        }
+        x = x + 1;
+    }
+    //Nhanh 2
+    x = a; y = 0;
+    p = 2 * (a2/b2) - 2*a + 1;
+    while(((a2/b2)*(y/x)) <= 1 ){
+        drawEllipse(center, x, y, color);
+        if(p < 0){
+            p = p + 2 * (a2 / b2) * (2*y + 3);
+        }
+        else{
+            p = p - 4*x + 2*(a2/b2)*(2*y + 3);
+            x = x - 1;
+        }
+        y = y + 1;
+    }
+}
+
+void haftBresenhamEllipse(Point2D center, int a, int b, int color){
+    float p, a2, b2;
+    int x, y;
+
+    a2 = a * a;
+    b2 = b * b;
+    //Nhanh 1
+    x = 0; y = b;
+    p = 2 * b2/a2 - 2*b + 1;
+    while(((b2/a2)*(x/y)) < 1 ){
+        drawEllipse(center, x, y, color);
+        if(p < 0){
+            p = p + 2 * (b2 / a2) * (2*x + 3);
+        }
+        else{
+            p = p - 4*y + 2*(b2/a2)*(2*x + 3);
+            y = y - 1;
+        }
+        x = x + 1;
+    }
+}
 //////////////////////////////////////END BASIC FUNCTION//////////////////////////////////////////
 
 //////////////////////////////////////==================//////////////////////////////////////////
@@ -381,3 +465,88 @@ void drawTrafficLight()
     setfillstyle(SOLID_FILL, GREEN);
     floodfill(greenLight.x, greenLight.y, WHITE);
 }
+<<<<<<< HEAD
+
+void veHinhHop(int dai, int rong, int cao)
+{
+    Point2D O(0, 0);
+    realToMachine(O);
+
+    Point2D A(dai, 0);
+    realToMachine(A);
+
+    bresenhamLine(O, A, WHITE, false);
+
+    Point2D F(dai, cao);
+    realToMachine(F);
+
+    bresenhamLine(F, A, WHITE, true);
+
+    Point2D E(0, cao);
+    realToMachine(E);
+
+    bresenhamLine(O, E, WHITE, false);
+
+    bresenhamLine(E, F, WHITE, true);
+
+    Point2D C = getPointOz(rong);
+
+    bresenhamLine(O, C, WHITE, false);
+
+    Point2D B(midX + dai*5*cos(45), midY + rong*5*sin(45));
+
+    bresenhamLine(B, A, WHITE);
+
+    bresenhamLine(B, C, WHITE);
+
+    Point2D D(midX - rong*5*cos(45), midY - cao*5*cos(80));
+
+    bresenhamLine(D, E, WHITE);
+
+    bresenhamLine(D, C, WHITE);
+
+    Point2D G(midX + dai*5*cos(45), midY - rong*5*cos(80));
+
+    bresenhamLine(G, F, WHITE, true);
+
+    bresenhamLine(G, B, WHITE, true);
+
+    bresenhamLine(G, D, WHITE, true);
+}
+=======
+void drawEmojiWow(){
+    Point2D faceEmoji (55, 28);
+    realToMachine(faceEmoji);
+    bresenhamEllipse(faceEmoji,70,100,WHITE);
+    setfillstyle(SOLID_FILL, YELLOW);
+    floodfill(faceEmoji.x, faceEmoji.y, WHITE);
+
+    Point2D eyeLeftEmoji (48, 34);
+    realToMachine(eyeLeftEmoji);
+    bresenhamEllipse(eyeLeftEmoji,12,20,WHITE);
+    setfillstyle(SOLID_FILL, BLACK);
+    floodfill(eyeLeftEmoji.x, eyeLeftEmoji.y, WHITE);
+
+    Point2D eyeRightEmoji (63, 34);
+    realToMachine(eyeRightEmoji);
+    bresenhamEllipse(eyeRightEmoji,12,20,WHITE);
+    setfillstyle(SOLID_FILL, BLACK);
+    floodfill(eyeRightEmoji.x, eyeRightEmoji.y, WHITE);
+
+    Point2D mouthEmoji (55, 18);
+    realToMachine(mouthEmoji);
+    bresenhamEllipse(mouthEmoji,25,45,WHITE);
+    setfillstyle(SOLID_FILL, BLACK);
+    floodfill(mouthEmoji.x, mouthEmoji.y, WHITE);
+
+
+    Point2D eyesbrownLeftEmoji (48, 35);
+    realToMachine(eyesbrownLeftEmoji);
+    haftBresenhamEllipse(eyesbrownLeftEmoji,12,25,BLACK);
+
+    Point2D eyesbrownRightEmoji (63, 35);
+    realToMachine(eyesbrownRightEmoji);
+    haftBresenhamEllipse(eyesbrownRightEmoji,12,25,BLACK);
+}
+
+>>>>>>> 8334b1a663dd9c89cd43fb3de7dd8012b529fd6f
